@@ -8,14 +8,34 @@
 import SwiftUI
 
 struct Art: View {
+
+    @StateObject var artViewModel = ArtViewModel()
+
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundColor(.accentColor)
-            Text("Hello, world!")
-        }
-        .padding()
+        NavigationStack {
+            List {
+                ForEach(artViewModel.art) { art in
+                    NavigationLink {
+                        ArtDetail(art: art)
+                    } label: {
+                        VStack(alignment: .leading) {
+                            Text(art.title)
+                                .font(.headline)
+                            Text(art.artist_display)
+                                .font(.subheadline)
+                        }
+                    }
+                }
+            }
+            .listStyle(.grouped)
+            .navigationTitle("Art")
+            .onAppear {
+                Task {
+                    await artViewModel.getArt()
+                }
+            }
+            .navigationTitle("Art")
+            }
     }
 }
 
